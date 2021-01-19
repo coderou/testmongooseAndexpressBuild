@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="btn">测试按钮</button>
+  <ul>
+
+  </ul>
+  <script>
+    const btn = document.getElementById('btn')
+    const ul = document.querySelector('ul')
+
+    function fn(data) {
+      console.log(data)
+      let str = ''
+      data.forEach(i => {
+        str += `<li>
+                <h4>${i.name}</h4>
+                <div>${i.gender}</div>
+                <p>${i.info}</p>
+              </li>`
+      })
+      ul.innerHTML = str
+    }
+
+    btn.onclick = function () {
+      const sc = document.createElement('script')
+      sc.src = 'http://localhost:5000/test?callback=fn'
+      document.body.appendChild(sc)
+    }
+
+  </script>
+</body>
+
+</html>
