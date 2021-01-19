@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router()//让我们搞一个路由,专门用于跳转主页
+const users = require('../mongodb/model/model');
+router.use(express.urlencoded({ extended: true }))//配置post body解析器
 let arr = [
   { name: '张飞', gender: '男', info: '粗中有细', },
   { name: '关羽', gender: '男', info: '讲义气', },
@@ -11,5 +13,19 @@ router.get('/test', (req, res) => {
   const { callback } = req.query
   const arrStr = JSON.stringify(arr)
   res.send(`${callback}(${arrStr})`)
+})
+
+
+router.post('/checkname', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*')//允许跨域
+  const { username } = req.body
+  console.log(username)
+  const isItUnique = await users.findOne({ username })
+  // console.log(isItUnique)
+  if (isItUnique) {
+    res.send('no')
+  } else {
+    res.send('yes')
+  }
 })
 module.exports = router
