@@ -8,6 +8,8 @@
 </head>
 
 <body>
+  <p id="userNickname"></p>
+  <p>欢迎━(*｀∀´*)ノ亻!</p>
   <button id="btn">测试按钮</button>
   <ul>
 
@@ -15,6 +17,11 @@
   <script>
     const btn = document.getElementById('btn')
     const ul = document.querySelector('ul')
+    const userNickname = document.querySelector('#userNickname')//拿到span,显示昵称
+
+    const nickname = location.search.split('=')[1]//拿查询字符串
+    userNickname.innerText = nickname
+
 
     function fn(data) {
       console.log(data)
@@ -28,7 +35,6 @@
       })
       ul.innerHTML = str
     }
-
     btn.onclick = function () {
       const sc = document.createElement('script')
       sc.src = 'http://localhost:5000/test?callback=fn'
