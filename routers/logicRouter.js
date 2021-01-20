@@ -47,7 +47,7 @@ router.get('/index', async (req, res) => {
 })
 
 
-router.get('/loginOut', async (req, res) => {
+router.get('/loginOut', async (req, res) => {//搞不掂了,后端太难了,告辞
   const { uid } = req.session
   console.log(uid)//600
   console.log(req.session)//600
