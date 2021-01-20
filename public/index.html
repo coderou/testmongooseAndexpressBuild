@@ -10,6 +10,7 @@
 <body>
   <p id="userNickname"></p>
   <p>欢迎━(*｀∀´*)ノ亻!</p>
+  <button id="deleteCookie">注销并删除cookie</button>
   <button id="btn">测试按钮</button>
   <ul>
 
@@ -18,8 +19,10 @@
     const btn = document.getElementById('btn')
     const ul = document.querySelector('ul')
     const userNickname = document.querySelector('#userNickname')//拿到span,显示昵称
+    const deleteCookie = document.querySelector('#deleteCookie')//注销
 
-    const nickname = location.search.split('=')[1]//拿查询字符串
+    let nickname = location.search.split('=')[1]//拿查询字符串
+    nickname = decodeURI(nickname)
     userNickname.innerText = nickname
 
 
@@ -39,6 +42,12 @@
       const sc = document.createElement('script')
       sc.src = 'http://localhost:5000/test?callback=fn'
       document.body.appendChild(sc)
+    }
+
+    deleteCookie.onclick = function () {
+      const xhr=new XMLHttpRequest()
+      xhr.open('get','http://localhost:5000/loginOut')
+      xhr.send()
     }
 
   </script>

@@ -1,50 +1,39 @@
 const express = require('express');
-const router = express.Router()
-const users = require('../mongodb/model/model');//拿用户文档
-const md5 = require('md5');//md5加密
+const router = express.Router()//让我们搞一个路由,专门用于跳转主页
+const path = require('path');
+const users = require('../mongodb/model/model');
 router.use(express.urlencoded({ extended: true }))//配置post body解析器
-
-router.post('/register', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*')//允许跨域
-  const { username, password, nickname } = req.body//解构赋值拿用户信息
-  await users.create({
-    username,
-    password: md5(password),
-    nickname
-  })
-
-  res.redirect('http://localhost:5000/log/registerSucess.html')
+let arr = [
+  { name: '张飞', gender: '男', info: '粗中有细', },
+  { name: '关羽', gender: '男', info: '讲义气', },
+  { name: '刘备', gender: '男', info: '编草鞋创业起家', },
+  { name: '貂蝉', gender: '女', info: '喜欢吕布', },
+  { name: '项羽', gender: '女', info: '辅助/坦克', },
+]
+router.get('/test', (req, res) => {
+  const { callback } = req.query
+  const arrStr = JSON.stringify(arr)
+  res.send(`${callback}(${arrStr})`)
 })
-router.post('/login', async (req, res) => {
+
+router.get('/register', (req, res) => {
+  const regPath = path.resolve(__dirname, '../public/register.html')
+  res.sendFile(regPath)
+})
+router.get('/login', (req, res) => {
+  const regPath = path.resolve(__dirname, '../public/login.html')
+  res.sendFile(regPath)
+})
+
+router.post('/checkname', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')//允许跨域
-  const { username, password } = req.body//解构赋值拿用户信息
-  const userInfo = await users.findOne({ username, password: md5(password) })//查找数据库信息,判断是否查无此人,密码为md5加密之后的
-  console.log(userInfo)
-  if (userInfo) {
-    const { nickname } = userInfo//结构赋值拿到nickname,准备传入到index
-    req.session.uid = userInfo._id//在重定向到主页前自动加密
-    res.redirect('http://localhost:5000/index.html?nickname=' + nickname)//登录成功,重定向到主页,url传递nickname
+  const { username } = req.body
+  const isItUnique = await users.findOne({ username })
+  // console.log(isItUnique)
+  if (isItUnique) {
+    res.send('no')
   } else {
-    res.redirect('http://localhost:5000/log/loginFail.html')
+    res.send('yes')
   }
 })
-
-router.get('/index', async (req, res) => {
-  // const { username } = req.query//下面有cookie就不用写了
-
-  // 接收cookie的信息,如果有指定的信息,认为之前登陆过了,直接渲染即可
-  const { uid } = req.session
-  if (uid) {
-    // 表示之前登陆过
-    // 去数据库中根据id查找当前用户数据,动态渲染用户名
-    const nickname = await model.findOne({ _id: uid }, { nickname: 1 })
-    res.redirect('http://localhost:5000/index.html?nickname=' + nickname)
-  } else {
-    //表示之前没有登录
-    res.redirect('http://localhost:5000/login')
-  }
-
-})
-
 module.exports = router
-
